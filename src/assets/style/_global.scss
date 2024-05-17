@@ -6,8 +6,19 @@ html {
 	background: rgb(39, 43, 51);
 }
 
-a {
+* {
+	box-sizing: border-box;
+}
+
+h2 {
+	font-weight: 800;
+	line-height: 1.1;
+}
+
+.link {
 	color: rgb(245, 245, 245);
+	text-decoration: none;
+	cursor: pointer;
 	&:hover {
 		color: rgb(255, 152, 0);
 		text-decoration: none;

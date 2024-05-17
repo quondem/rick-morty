@@ -1,7 +1,9 @@
-export interface defaultCharacter {
+import { Info } from "./global.type";
+
+export interface Character {
 	created: string;
 	episode: string[];
-	// gender: string;
+	gender: string;
 	id: number;
 	image: string;
 	location: { name: string; url: string };
@@ -11,4 +13,13 @@ export interface defaultCharacter {
 	status: string;
 	type: string;
 	url: string;
+}
+
+export interface ServerResponse {
+	data: {
+		info: Info;
+		results: Character[];
+	};
+	status: number;
+	statusText: string;
 }

@@ -2,48 +2,70 @@
 	<article class="card__wrapper">
 		<div class="card__img">
 			<img
-				:src="img"
+				:src="image"
 				alt=""
 			/>
 		</div>
 		<div class="card__content">
 			<div class="section">
-				<a
+				<p
+					class="link"
 					href="#"
 					@click.prevent
 				>
 					<h2>{{ title }}</h2>
-				</a>
-				<span class="status"><span class="status__icon active"></span>{{ status }}</span>
-			</div>
-			<div class="section">
-				<span class="text-gray">Last known location:</span>
-				<a
-					href="#"
-					@click.prevent
-					>{{ location }}</a
+				</p>
+				<span class="status"
+					><span
+						class="status__icon"
+						:class="status"
+					></span
+					>{{ status }} - {{ species }}</span
 				>
 			</div>
 			<div class="section">
-				<span class="text-gray">First seen in:</span>
-				<a
+				<span class="text-gray">Last known location:<br /></span>
+				<p
+					class="link"
 					href="#"
 					@click.prevent
-					>{{ firstSeen }}</a
 				>
+					{{ location }}
+				</p>
+			</div>
+			<div class="section">
+				<span class="text-gray">First seen in:<br /></span>
+				<p
+					class="link"
+					href="#"
+					@click.prevent
+				>
+					{{ firstSeenRef }}
+				</p>
 			</div>
 		</div>
 	</article>
 </template>
 
 <script setup lang="ts">
-	const { img } = defineProps<{
-		img: string;
+	import axios from "axios";
+	import { ref } from "vue";
+
+	const { image, title, status, species, location, firstSeen } = defineProps<{
+		image: string;
 		title: string;
 		status: string;
+		species: string;
 		location: string;
 		firstSeen: string;
 	}>();
+
+	let firstSeenRef = ref("");
+	const firstSeenLoad = async () => {
+		let res = await axios.get(firstSeen);
+		firstSeenRef.value = res.data.name;
+	};
+	firstSeenLoad();
 </script>
 
 <style lang="scss" scoped>
@@ -57,6 +79,11 @@
 			border-radius: 0.5rem;
 			margin: 0.75rem;
 			box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+			@media (max-width: 650px) {
+				flex-direction: column;
+				height: initial;
+				width: 100%;
+			}
 		}
 		&__img {
 			flex: 2 1 0%;
@@ -69,6 +96,9 @@
 				transition: opacity 0.5s ease 0s;
 				object-position: center center;
 				object-fit: cover;
+				@media (max-width: 650px) {
+					height: 300px;
+				}
 			}
 		}
 		&__content {
@@ -78,13 +108,13 @@
 			color: rgb(255, 255, 255);
 			display: flex;
 			flex-direction: column;
+			justify-content: space-between;
 			&:first-child {
 				-webkit-box-pack: start;
 				justify-content: flex-start;
 			}
 			&:last-child {
 				-webkit-box-pack: end;
-				justify-content: flex-end;
 			}
 			& section {
 				flex: 1 1 0%;
@@ -92,6 +122,13 @@
 				flex-direction: column;
 				-webkit-box-pack: center;
 				justify-content: center;
+			}
+			& span {
+				font-size: 16px;
+			}
+			@media (max-width: 650px) {
+				pointer-events: none;
+				gap: 1.25rem;
 			}
 		}
 	}
@@ -108,11 +145,14 @@
 			width: 0.5rem;
 			margin-right: 0.375rem;
 			border-radius: 50%;
-			&_active {
+			&.Alive {
 				background: rgb(85, 204, 68);
 			}
-			&_inactive {
+			&.Dead {
 				background: rgb(214, 61, 46);
+			}
+			&.unknown {
+				background: rgb(158, 158, 158);
 			}
 		}
 	}
